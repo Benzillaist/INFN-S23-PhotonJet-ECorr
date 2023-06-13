@@ -9,7 +9,12 @@ void photon_energy()
 
   TString saveDir = "photonGun_3000-5000";
 
-  /////////////////////////////
+  ////////////////////////////
+  //ANALYSIS CONFIG SETTINGS//
+  ////////////////////////////
+
+  // Max pT a reconstructed particle can be from truth pT
+  float maxpTRecoErr = 0.1;
 
   //TFile *myFile = new TFile("ntuple.root");
   TFile *myFile = new TFile(fileName);
@@ -71,7 +76,7 @@ void photon_energy()
       rcmoyTemp = rcmoy_RA.At(i);
       rcmozTemp = rcmoz_RA.At(i);
 
-      weightTemp = 1 / sqrt( pow(mcmoxTemp - rcmoxTemp, 2) + pow(mcmoyTemp - rcmoyTemp, 2) +pow(mcmozTemp - rcmozTemp, 2) );
+      weightTemp = sqrt(pow(mcmoxTemp, 2) + pow(mcmoyTemp, 2) + pow(mcmozTemp, 2)) / sqrt( pow(mcmoxTemp - rcmoxTemp, 2) + pow(mcmoyTemp - rcmoyTemp, 2) +pow(mcmozTemp - rcmozTemp, 2) );
 
       if(weightTemp > r2wMax) {
 	r2wMax = weightTemp;
@@ -79,7 +84,7 @@ void photon_energy()
       }
     }
 
-    if(r2wMax > 0.01) {
+    if(r2wMax > (1 / maxpTRecoErr)) {
       rcmoTemp.SetXYZ(rcmox_RA.At(r2fTemp), rcmoy_RA.At(r2fTemp), rcmoz_RA.At(r2fTemp));
       
       recoPhotonTruth_pt_0->Fill(mcmoTemp.Perp());
