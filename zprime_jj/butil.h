@@ -1,6 +1,8 @@
 #ifndef BUTIL_H
 #define BUTIL_H
 
+// I'm too lazy to learn structs
+
 bool charToBool(char i) {
   if(i == '0') {
     return false;

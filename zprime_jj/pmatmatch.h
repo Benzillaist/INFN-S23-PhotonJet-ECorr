@@ -6,9 +6,9 @@
 int** matchJets(int nj_R, int nj_T, TVector3 recoVec3[], TVector3 truthVec3[], double minWeight) {
 
   // energy res weight: [0,1]
-  double eResWeight = 0.2;
+  double eResWeight = 0.0;
   // delta R weight: [0,1]
-  double deltaRWeight = 0.8;
+  double deltaRWeight = 1.0;
 
   int matchArrR[nj_T];
   int matchArrT[nj_T];
@@ -78,8 +78,8 @@ int** matchJets(int nj_R, int nj_T, TVector3 recoVec3[], TVector3 truthVec3[], d
   int** ret = build2DArrI(3, nj_T);
   int size[nj_T];
   for(int i = matchCount; i < nj_T; i++) {
-    matchArrR[i] = 0;
-    matchArrT[i] = 0;
+    matchArrR[i] = -1;
+    matchArrT[i] = -1;
     size[i] = 0;
   }
 

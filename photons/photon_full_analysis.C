@@ -24,19 +24,19 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
   //////////////////////////////
 
   // Max pT a reconstructed particle can be from truth pT
-  float maxERecoErr = 0.3;
+  float maxERecoErr = 0.5;
 
   // Max R a reconstructed particle can be
   float maxRRecoErr = 0.1;
 
   // delta R that any semi-major reconstructed particles can be from the most major one
-  float coneAcceptR = 0.13;
+  float coneAcceptR = 0.15;
   
   // If true, limits the reconstructed events used to those which only had one reconstructed particle
   bool limit1Reco = false;
 
   // Number of particles
-  int maxN = 25000;
+  int maxN = 40000;
 
   // Low pT range
   int lowE = 0;
@@ -122,7 +122,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
   TH1F *matchDRneutron_0 = new TH1F("mDRne_0", "Delta R", 20, 0, 0.2); // delta R between best match reco and neutron reco particles
   TH1F *matchDRelectron_0 = new TH1F("mDRel_0", "Delta R", 20, 0, 0.2); // delta R between best match reco and electron reco particles
   TH1F *matchDRpion_0 = new TH1F("mDRpi_0", "Delta R", 20, 0, 0.2); // delta R between best match reco and pion reco particles
-  TH1F *Eres_0 = new TH1F("Er_0", "Energy resolution", resBins, -0.1, 0.1); //Resolution of reconstructed energy
+  TH1F *Eres_0 = new TH1F("Er_0", "Energy Accuracy", resBins, -0.1, 0.1); //Resolution of reconstructed energy
   TH2F *Ephase_0 = new TH2F("Epha_0", "True vs Reco energy phase plot", 100, -lowEErr, highE + highEErr, 100, lowE - lowEErr, highE + highEErr); //Phase plot of true energy w.r.t reconstructed energy
   TH3F *K2Corr_0 = new TH3F("K2c_0", "Correction w.r.t. polar angle and energy", 20, lowE, highE, 20, 0, 3.2, 20, 0.94, 0.98); //Correction term plot w.r.t. polar angle and energy
   TGraph2D *K2Corr2D_0 = new TGraph2D(); //2D surface of the above scatter plot
@@ -829,8 +829,8 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     c = new TCanvas();
 
     CorrERes_Bins_0->Draw();
-    CorrERes_Bins_0->SetTitle("Corrected reconstructed energy resolution -- Bins");
-    CorrERes_Bins_0->GetXaxis()->SetTitle("Energy resolution (GeV)");
+    CorrERes_Bins_0->SetTitle("Corrected reconstructed energy accuracy -- Bins");
+    CorrERes_Bins_0->GetXaxis()->SetTitle("Energy Accuracy");
     CorrERes_Bins_0->GetYaxis()->SetTitle("Count");
 
     CorrERes_Bins_0->Fit("gaus");
@@ -849,8 +849,8 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     c = new TCanvas();
 
     CorrERes_Fit_0->Draw();
-    CorrERes_Fit_0->SetTitle("Corrected reconstructed energy resolution -- Fit");
-    CorrERes_Fit_0->GetXaxis()->SetTitle("Energy resolution (GeV)");
+    CorrERes_Fit_0->SetTitle("Corrected reconstructed energy accuracy -- Fit");
+    CorrERes_Fit_0->GetXaxis()->SetTitle("(E_{Reco} - E_{True}) / E_{True}");
     CorrERes_Fit_0->GetYaxis()->SetTitle("Count");
 
     CorrERes_Fit_0->Fit("gaus");
@@ -1371,9 +1371,9 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     TGraphErrors *HCRatioE_0 = new TGraphErrors(fitDivs, xE, HCREBins, exE, HCRESTD);
 
     HCRatioE_0->Draw();
-    HCRatioE_0->SetTitle("HCal to total energy ratios w.r.t. Energy");
+    HCRatioE_0->SetTitle("HCal to ECal + HCal Energy Ratios w.r.t. Energy");
     HCRatioE_0->GetXaxis()->SetTitle("True Energy (GeV)");
-    HCRatioE_0->GetYaxis()->SetTitle("HCal / Total Energy");
+    HCRatioE_0->GetYaxis()->SetTitle("E_{HCal} / (E_{ECal} + E_{HCal})");
 
     HCRatioE_0->Fit("logFit");
     
@@ -1384,9 +1384,9 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     TGraphErrors *HCRatioT_0 = new TGraphErrors(fitDivs, xT, HCRTBins, exT, HCRTSTD);
 
     HCRatioT_0->Draw();
-    HCRatioT_0->SetTitle("HCal to total energy ratios w.r.t. Polar angle");
+    HCRatioT_0->SetTitle("HCal to ECal + HCal Energy Ratios w.r.t. Polar angle");
     HCRatioT_0->GetXaxis()->SetTitle("True Polar Angle (Rads)");
-    HCRatioT_0->GetYaxis()->SetTitle("HCal / Total Energy");
+    HCRatioT_0->GetYaxis()->SetTitle("E_{HCal} / (E_{ECal} + E_{HCal})");
 
     c->SaveAs(saveDir + "/HCalHists/HCRatio_T.png");
     c->Close();
@@ -1644,8 +1644,8 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
 
   if(rH) {
     deltaR_0->Draw();
-    deltaR_0->SetTitle("Delta R");
-    deltaR_0->GetXaxis()->SetTitle("Delta R (Rads)");
+    deltaR_0->SetTitle("Delta R between truth and best match photon");
+    deltaR_0->GetXaxis()->SetTitle("Delta R");
     deltaR_0->GetYaxis()->SetTitle("Count");
 
     c->SaveAs(saveDir + "/resolutionHists/deltaR.png");
@@ -1654,7 +1654,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
 
     matchDRphoton_0->Draw();
     matchDRphoton_0->SetTitle("Delta R between best match photon reco particles");
-    matchDRphoton_0->GetXaxis()->SetTitle("Delta R (Rads)");
+    matchDRphoton_0->GetXaxis()->SetTitle("Delta R");
     matchDRphoton_0->GetYaxis()->SetTitle("Count");
 
     c->SaveAs(saveDir + "/resolutionHists/matchDRphoton.png");
@@ -1663,7 +1663,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
 
     matchDRneutron_0->Draw();
     matchDRneutron_0->SetTitle("Delta R between best match neutron reco particles");
-    matchDRneutron_0->GetXaxis()->SetTitle("Delta R (Rads)");
+    matchDRneutron_0->GetXaxis()->SetTitle("Delta R");
     matchDRneutron_0->GetYaxis()->SetTitle("Count");
 
     c->SaveAs(saveDir + "/resolutionHists/matchDRneutron.png");
@@ -1672,7 +1672,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
 
     matchDRelectron_0->Draw();
     matchDRelectron_0->SetTitle("Delta R between best match electron reco particles");
-    matchDRelectron_0->GetXaxis()->SetTitle("Delta R (Rads)");
+    matchDRelectron_0->GetXaxis()->SetTitle("Delta R");
     matchDRelectron_0->GetYaxis()->SetTitle("Count");
 
     c->SaveAs(saveDir + "/resolutionHists/matchDRelectron.png");
@@ -1681,14 +1681,19 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
 
     matchDRpion_0->Draw();
     matchDRpion_0->SetTitle("Delta R between best match pion reco particles");
-    matchDRpion_0->GetXaxis()->SetTitle("Delta R (Rads)");
+    matchDRpion_0->GetXaxis()->SetTitle("Delta R");
     matchDRpion_0->GetYaxis()->SetTitle("Count");
 
     c->SaveAs(saveDir + "/resolutionHists/matchDRpion.png");
     c->Close();
     c = new TCanvas();
 
-    hs = new THStack("hs", "Delta R between best match and other reco particles;Delta R (Rads);Count");
+    matchDRphoton_0->SetTitle("Photons");
+    matchDRneutron_0->SetTitle("Neutrons");
+    matchDRelectron_0->SetTitle("Electrons");
+    matchDRpion_0->SetTitle("Pions");
+
+    hs = new THStack("hs", "Delta R between best match and other reco particles;Delta R;Count");
 
     matchDRphoton_0->SetLineColor(1);
     matchDRneutron_0->SetLineColor(2);
@@ -1710,8 +1715,8 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     c = new TCanvas();
     
     Eres_0->Draw();
-    Eres_0->SetTitle("Energy Resolution");
-    Eres_0->GetXaxis()->SetTitle("Energy Resolution");
+    Eres_0->SetTitle("Energy Accuracy");
+    Eres_0->GetXaxis()->SetTitle("(E_{Reco} - E_{True}) / E_{True}");
     Eres_0->GetYaxis()->SetTitle("Count");
 
     Eres_0->Fit("gaus");
@@ -1963,7 +1968,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
       strcat(outmcT, ".png");
 
       recoTypesE[i]->Draw();
-      recoTypesE[i]->SetTitle("Reco Type Energy Distribution -- " + typeNames[i]);
+      recoTypesE[i]->SetTitle(typeNames[i]);
       recoTypesE[i]->GetXaxis()->SetTitle("Energy (GeV)");
       recoTypesE[i]->GetYaxis()->SetTitle("Count");
       
@@ -1972,7 +1977,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
       c = new TCanvas();
 
       recoTypesT[i]->Draw();
-      recoTypesT[i]->SetTitle("Reco Type Polar Angle Distribution -- " + typeNames[i]);
+      recoTypesT[i]->SetTitle(typeNames[i]);
       recoTypesT[i]->GetXaxis()->SetTitle("Polar Angle (Rads)");
       recoTypesT[i]->GetYaxis()->SetTitle("Count");
       
@@ -1981,8 +1986,8 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
       c = new TCanvas();
 
       mcRecoTypesE[i]->Draw();
-      mcRecoTypesE[i]->SetTitle("Reco Type Truth Energy Distribution -- " + typeNames[i]);
-      mcRecoTypesE[i]->GetXaxis()->SetTitle("Energy_{True} (GeV)");
+      mcRecoTypesE[i]->SetTitle(typeNames[i]);
+      mcRecoTypesE[i]->GetXaxis()->SetTitle("Truth Photon Energy (GeV)");
       mcRecoTypesE[i]->GetYaxis()->SetTitle("Count");
 
       c->SaveAs(outmcE);
@@ -1990,7 +1995,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
       c = new TCanvas();
 
       mcRecoTypesT[i]->Draw();
-      mcRecoTypesT[i]->SetTitle("Reco Type Truth Polar Angle Distribution -- " + typeNames[i]);
+      mcRecoTypesT[i]->SetTitle(typeNames[i]);
       mcRecoTypesT[i]->GetXaxis()->SetTitle("Polar Angle_{True} (Rads)");
       mcRecoTypesT[i]->GetYaxis()->SetTitle("Count");
 
@@ -2056,7 +2061,7 @@ void photon_full_analysis_H(bool useArgs, char const *args) {
     c->Close();
     c = new TCanvas();
 
-    hs = new THStack("hs", "Reco Type Truth Energy Distribution;Energy_{True} (GeV);Count");
+    hs = new THStack("hs", "Reco Type Truth Energy Distribution;Truth Photon Energy (GeV);Count");
 
     c->SetLogy();
 
